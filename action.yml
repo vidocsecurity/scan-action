@@ -55,5 +55,7 @@ runs:
         VIDOC_TOKEN: ${{ inputs.api_key }}
         VIDOC_API_URL: ${{ inputs.api_url }}
         DEBUG: ${{ inputs.debug }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        INPUT_STEP_KEY: ${{ inputs.step_key }}
       run: |
         vidoc ci ${{ inputs.args }}
