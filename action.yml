@@ -1,0 +1,49 @@
+name: "Vidoc Security Scan"
+author: "Vidoc Security"
+description: "Runs a security scan on your codebase and reports potential vulnerabilities."
+
+branding:
+  icon: "shield"
+  color: "blue"
+
+inputs:
+  api_key:
+    required: true
+  api_url:
+    required: false
+    description: "For single tenants"
+  debug:
+    default: false
+    required: false
+  args:
+    description: "Extra arguments to pass to `vidoc ci`"
+    default: ""
+    required: false
+
+outputs: {}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+
+    - name: Install Vidoc CLI
+      shell: bash
+      run: npm install -g @vidoc/cli
+
+    - name: Add $HOME/go/bin to PATH
+      shell: bash
+      run: echo "${HOME}/go/bin" >> "$GITHUB_PATH"
+
+    - name: Run Vidoc CI
+      shell: bash
+      env:
+        VIDOC_TOKEN: ${{ inputs.api_key }}
+        VIDOC_API_URL: ${{ inputs.api_url }}
+        DEBUG: ${{ inputs.debug }}
+      run: |
+        vidoc ci ${{ inputs.args }}
